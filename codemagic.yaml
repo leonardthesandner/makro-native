@@ -1,20 +1,18 @@
 workflows:
   ios-release:
-    name: iOS App Store Release
+    name: iOS Release
     max_build_duration: 60
     instance_type: mac_mini_m2
-
     integrations:
-      app_store_connect: Codemagic  # Name deines ASC-Keys in Codemagic
-
+      app_store_connect: codemagic_api_key
     environment:
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.leonardsandner.makro
-      node: latest
-      xcode: latest
-      cocoapods: default
-
+        bundle_identifier: com.makro-tracking.app
+      vars:
+        BUNDLE_ID: "com.makro-tracking.app"
+        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
+        XCODE_SCHEME: "App"
     scripts:
       - name: Install npm dependencies
         script: npm install
@@ -25,31 +23,66 @@ workflows:
       - name: Capacitor sync
         script: npx cap sync ios
 
+      - name: Set build number
+        script: |
+          cd ios/App
+          agvtool new-version -all $BUILD_NUMBER
+
       - name: Install CocoaPods
         script: |
           cd ios/App
           pod install
 
       - name: Set up code signing
-        script: xcode-project use-profiles
-
-      - name: Build IPA
         script: |
-          xcode-project build-ipa \
-            --workspace ios/App/App.xcworkspace \
-            --scheme App
+          cd ios/App
+          xcode-project use-profiles
+
+      - name: Build iOS
+        script: |
+          xcodebuild \
+            -workspace "$XCODE_WORKSPACE" \
+            -scheme "$XCODE_SCHEME" \
+            -configuration Release \
+            -archivePath build/ios/makro.xcarchive \
+            archive \
+            DEVELOPMENT_TEAM=MG35YZV48C \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            CODE_SIGN_STYLE=Manual \
+            PROVISIONING_PROFILE_SPECIFIER="makro AppStore" \
+            2>&1 | tee /tmp/xcodebuild.log; exit ${PIPESTATUS[0]}
+
+      - name: Export IPA
+        script: |
+          cat > exportOptions.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store-connect</string>
+            <key>teamID</key>
+            <string>MG35YZV48C</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>com.makro-tracking.app</key>
+              <string>makro AppStore</string>
+            </dict>
+          </dict>
+          </plist>
+          EOF
+          xcodebuild -exportArchive \
+            -archivePath build/ios/makro.xcarchive \
+            -exportPath build/ios/ipa \
+            -exportOptionsPlist exportOptions.plist
 
     artifacts:
       - build/ios/ipa/*.ipa
-      - /tmp/xcodebuild_logs/*.log
+      - /tmp/xcodebuild.log
 
     publishing:
-      email:
-        recipients:
-          - leonardsandner@gmail.com
-        notify:
-          success: true
-          failure: true
       app_store_connect:
         auth: integration
         submit_to_testflight: true
