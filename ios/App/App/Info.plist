@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
+	<string>de</string>
 	<key>CFBundleDisplayName</key>
-        <string>makro.</string>
+	<string>makro.</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -22,28 +22,42 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>armv7</string>
-	</array>
+
+	<!-- Camera & Photo permissions (needed for receipt scan + meal photo analysis) -->
+	<key>NSCameraUsageDescription</key>
+	<string>makro. benötigt die Kamera, um Kassenbons zu scannen und Mahlzeiten per Foto zu analysieren.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>makro. benötigt Zugriff auf deine Fotos, um Bilder für die Mahlzeitenanalyse auszuwählen.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>makro. möchte Fotos in deiner Bibliothek speichern.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>makro. benötigt das Mikrofon für die Spracheingabe.</string>
+
+	<!-- Portrait only – no landscape -->
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+
+	<!-- Status bar -->
 	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
+
+	<!-- Launch screen -->
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+
+	<!-- Inline media (needed for video/audio in WKWebView) -->
+	<key>UIRequiresFullScreen</key>
 	<true/>
 </dict>
 </plist>

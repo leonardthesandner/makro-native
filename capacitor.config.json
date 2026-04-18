@@ -5,18 +5,20 @@
   "ios": {
     "contentInset": "automatic",
     "allowsLinkPreview": false,
-    "scrollEnabled": false
+    "allowsInlineMediaPlayback": true,
+    "backgroundColor": "#0c0c0c"
   },
   "plugins": {
     "SplashScreen": {
-      "launchShowDuration": 800,
+      "launchShowDuration": 600,
       "backgroundColor": "#0c0c0c",
       "showSpinner": false,
       "launchAutoHide": true
     },
     "StatusBar": {
       "style": "DARK",
-      "backgroundColor": "#0c0c0c"
+      "backgroundColor": "#0c0c0c",
+      "overlaysWebView": false
     }
   }
 }
