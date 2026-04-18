@@ -1,0 +1,19 @@
+{
+  "name": "makro-native",
+  "version": "1.0.0",
+  "description": "makro. – native iOS app (Capacitor wrapper)",
+  "scripts": {
+    "sync-web": "node scripts/sync-web.js",
+    "cap-sync": "npx cap sync ios",
+    "build": "node scripts/sync-web.js && npx cap sync ios"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/ios": "^6.0.0",
+    "@capacitor/splash-screen": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0"
+  }
+}
